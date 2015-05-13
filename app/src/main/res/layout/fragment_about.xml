@@ -1,0 +1,14 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="297dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="FCM Android 2.0\nConnect to your Copter!\nHave Fun!\n(c) by Joachim, 2015"
+        android:id="@+id/textAbout"
+        android:layout_weight="0.45" />
+</LinearLayout>

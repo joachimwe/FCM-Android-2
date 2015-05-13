@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/fg_map"
+        tilesource="MapquestOSM"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="top" />
+
+    <TextView
+        android:id="@+id/fg_info"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="gpsInfo" />
+
+    <ListView
+        android:id="@+id/fg_liste"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="gpsList"></ListView>
+
+
+</LinearLayout>

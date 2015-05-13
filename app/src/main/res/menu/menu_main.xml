@@ -1,0 +1,54 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_connect"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_bluetooth"
+        android:title="@string/action_connect"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/action_disconnect"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_bluetooth_connected"
+        android:title="@string/action_connect"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/action_startMenu"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_menu"
+        android:title="@string/action_menu"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/action_DataStream"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_storage"
+        android:title="@string/action_startStream"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/action_stopStream"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_stream_active"
+        android:title="@string/action_stopStream"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_settings"
+        android:title="@string/action_settings"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_bluetooth_searching"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_bluetooth_searching"
+        android:title="@string/action_bluetooth_searching"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_about"
+        android:title="@string/action_about"
+        android:showAsAction="never" />
+
+</menu>
