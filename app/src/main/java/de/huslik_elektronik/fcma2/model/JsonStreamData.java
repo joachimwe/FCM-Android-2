@@ -18,7 +18,6 @@
 package de.huslik_elektronik.fcma2.model;
 
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
 public class JsonStreamData {

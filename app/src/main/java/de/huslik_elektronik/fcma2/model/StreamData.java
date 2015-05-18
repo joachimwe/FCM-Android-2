@@ -152,6 +152,10 @@ public class StreamData {
     public void saveViaJson() {
         JsonHandler jH = new JsonHandler(dataStreamSettings, (ArrayList<CSensorFrame>) dataStreams.get(SENSOR), (ArrayList<CGpsFrame>) dataStreams.get(GPS));
         jsonStr = jH.exportToJson();
+
+        // Test kml
+        KmlHandlerGpsStream kmlH = new KmlHandlerGpsStream();
+        String kmlStr = kmlH.getKML((ArrayList<CGpsFrame>) dataStreams.get(GPS));
     }
 
     public void loadViaJson() {
