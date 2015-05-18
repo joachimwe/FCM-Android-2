@@ -18,7 +18,6 @@
 package de.huslik_elektronik.fcma2.activity;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -204,6 +203,19 @@ public class MainActivity extends Activity {
             setFragment(Controller.ActiveFragment.SETTING);
         }
 
+        if (id == R.id.action_dataOperations)
+        {
+            fcmService.getModelStreamData().saveViaJson();
+        }
+        if (id == R.id.action_dataimport)
+        {
+            fcmService.getModelStreamData().loadViaJson();
+        }
+
+        if (id == R.id.action_dataclear)
+        {
+            fcmService.getModelStreamData().clear();
+        }
         if (id == R.id.action_about)
 
         {

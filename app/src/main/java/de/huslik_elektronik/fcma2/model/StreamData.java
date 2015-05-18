@@ -36,8 +36,9 @@ public class StreamData {
 
     private ArrayList<CDataStreamSetting> dataStreamSettings;
 
-    // private ArrayList<CDataPacket> dataPackets;
     private ArrayList dataStreams;
+
+    private String jsonStr;
 
     private ArrayList<Handler> vHandlers;
     private Handler btStreamHandler =
@@ -146,20 +147,22 @@ public class StreamData {
                 lastPacketSend[SENSOR] = ((ArrayList<CSensorFrame>) dataStreams.get(SENSOR)).size();
             }
         }
-//
-//        for (CDataPacket dp : dataPackets) {
-//            for (Object frame : dp.getFrames()) {
-//                // Sensor Frames
-//                if (frame instanceof CSensorFrame) {
-//                    for (Handler h : vHandlers) {
-//                        m = Message.obtain(h, SENSOR, dp.getId(), 0, frame);
-//                        h.sendMessage(m);
-//                    }
-//
-//                }
-//            }
-//        }
-//        lastPacketSend[SENSOR] = dataPackets.size();
+    }
+
+    public void saveViaJson() {
+        JsonHandler jH = new JsonHandler(dataStreamSettings, (ArrayList<CSensorFrame>) dataStreams.get(SENSOR), (ArrayList<CGpsFrame>) dataStreams.get(GPS));
+        jsonStr = jH.exportToJson();
+    }
+
+    public void loadViaJson() {
+        JsonHandler jH = new JsonHandler(dataStreamSettings, (ArrayList<CSensorFrame>) dataStreams.get(SENSOR), (ArrayList<CGpsFrame>) dataStreams.get(GPS));
+        jH.importFromJson(jsonStr);
+        dataStreamSettings = jH.getDataStreamSetting();
+
+        dataStreams.set(SENSOR, jH.getDataStreamSensors());
+        dataStreams.set(GPS, jH.getDataStreamGps());
+
+
     }
 
 

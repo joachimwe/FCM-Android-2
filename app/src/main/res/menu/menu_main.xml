@@ -39,6 +39,21 @@
         android:title="@string/action_settings"
         android:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_dataOperations"
+        android:orderInCategory="100"
+        android:title="@string/action_dataOperations"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_dataimport"
+        android:orderInCategory="100"
+        android:title="Import"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_dataclear"
+        android:orderInCategory="100"
+        android:title="Clear Data"
+        android:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_bluetooth_searching"
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_bluetooth_searching"
