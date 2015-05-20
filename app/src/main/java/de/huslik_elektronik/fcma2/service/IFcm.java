@@ -17,6 +17,9 @@
 
 package de.huslik_elektronik.fcma2.service;
 
+
+import android.content.Context;
+
 public interface IFcm {
 
     public static enum MenuCommand {PP, P, ENTER, M, MM}
@@ -31,6 +34,10 @@ public interface IFcm {
 
     ;
 
+    /**
+     * SetApplicationContext
+     */
+    public void setApplicationContext(Context ctx);
 
     /**
      * Connect to source e.g. BT
@@ -41,6 +48,7 @@ public interface IFcm {
      * Disconnect from source
      */
     public BtStatus disconnect();
+
 
     /**
      * getBluetooth Status

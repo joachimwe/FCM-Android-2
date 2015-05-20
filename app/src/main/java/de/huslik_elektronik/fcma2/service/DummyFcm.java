@@ -17,14 +17,14 @@
 
 package de.huslik_elektronik.fcma2.service;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import de.huslik_elektronik.fcma2.model.CDataPacket;
 import de.huslik_elektronik.fcma2.model.CGpsFrame;
 import de.huslik_elektronik.fcma2.model.CSensorFrame;
-import de.huslik_elektronik.fcma2.model.Menu;
 import de.huslik_elektronik.fcma2.model.CVersion;
+import de.huslik_elektronik.fcma2.model.Menu;
 import de.huslik_elektronik.fcma2.model.StreamData;
 
 public class DummyFcm implements IFcm {
@@ -34,11 +34,19 @@ public class DummyFcm implements IFcm {
     private BtStatus btStatus;
     private BtType btType;
 
+    protected Context ctx;
+
     public DummyFcm(Handler m, Handler d) {
+        ctx = null;
         mMenuHandler = m;
         mDataHandler = d;
         btStatus = BtStatus.NOTCONNECTED;
         btType = BtType.NONE;
+    }
+
+    @Override
+    public void setApplicationContext(Context c) {
+        ctx = c;
     }
 
     @Override
@@ -145,4 +153,6 @@ public class DummyFcm implements IFcm {
     public void stopDataStream() {
         btType = BtType.NONE;
     }
+
+
 }

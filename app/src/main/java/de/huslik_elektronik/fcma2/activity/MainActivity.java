@@ -32,8 +32,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import de.huslik_elektronik.fcma2.R;
+import de.huslik_elektronik.fcma2.bluetooth.DeviceListActivity;
 import de.huslik_elektronik.fcma2.service.Controller;
 import de.huslik_elektronik.fcma2.service.IFcm;
 import de.huslik_elektronik.fcma2.view.GpsFragment;
@@ -65,6 +67,7 @@ public class MainActivity extends Activity {
                     fcmService = (Controller.FcmController) iBinder;
                     fcmService.setActiveFragmet(Controller.ActiveFragment.ABOUT);
                     mSerivceBound = true;
+                    fcmService.getBridge().setApplicationContext(getApplicationContext());
                 }
 
                 @Override
@@ -203,19 +206,24 @@ public class MainActivity extends Activity {
             setFragment(Controller.ActiveFragment.SETTING);
         }
 
-        if (id == R.id.action_dataOperations)
-        {
+        if (id == R.id.action_dataOperations) {
             fcmService.getModelStreamData().saveViaJson();
         }
-        if (id == R.id.action_dataimport)
-        {
+        if (id == R.id.action_dataimport) {
             fcmService.getModelStreamData().loadViaJson();
         }
 
-        if (id == R.id.action_dataclear)
-        {
+        if (id == R.id.action_dataclear) {
             fcmService.getModelStreamData().clear();
         }
+        if (id == R.id.action_bluetooth_searching) {
+            //fcmService.getBridge().btSearching();
+            // Launch the DeviceListActivity to see devices and do scan
+            Intent serverIntent = new Intent(this, DeviceListActivity.class);
+            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+            return true;
+        }
+
         if (id == R.id.action_about)
 
         {
@@ -287,6 +295,74 @@ public class MainActivity extends Activity {
 
         }
         xact.commit();
+    }
+
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_ENABLE_BT = 3;
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CONNECT_DEVICE_SECURE:
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK) {
+                    connectDevice(data, true, false);
+                }
+                break;
+
+            case REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth is now enabled, so set up a chat session
+                    // setupFcmMenu();
+
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+                    Toast.makeText(this, R.string.bt_not_enabled_leaving,
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+
+        }
+    }
+
+
+    private void connectDevice(Intent data, boolean secure, boolean lastConnect) {
+        String address = "test";
+
+        if (!lastConnect)
+            address = data.getExtras().getString(
+                    DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device MAC address
+        else
+            ; //   address = setting.getString(LAST_BT, "");
+
+
+       /* // Get the BluetoothDevice object
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
+        // Save last BT device
+        if (device != null) {
+            SharedPreferences.Editor editor = setting.edit();
+            editor.putString(LAST_BT, address);
+            editor.commit();
+        }
+
+        // StartupFcmService and Processing
+
+        startupFcmService();
+
+        // Attempt to connect to the device
+        mFcmService.connect(device);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Log.d(TAG, "Wait to complete Connection \n" + e);
+        }
+
+        // FCM Hello
+        sendMessage(fd.getCmdStr(COMMAND.FCM));*/
     }
 
 
