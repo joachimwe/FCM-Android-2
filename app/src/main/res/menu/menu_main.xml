@@ -1,5 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
@@ -39,14 +38,14 @@
         android:title="@string/action_settings"
         android:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_dataOperations"
-        android:orderInCategory="100"
-        android:title="@string/action_dataOperations"
-        android:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_dataimport"
+        android:id="@+id/action_dataImport"
         android:orderInCategory="100"
         android:title="Import"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_dataExport"
+        android:orderInCategory="100"
+        android:title="@string/action_dataExport"
         android:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_dataclear"

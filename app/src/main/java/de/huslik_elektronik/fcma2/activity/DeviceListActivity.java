@@ -31,7 +31,7 @@
  * limitations under the License.
  */
 
-package de.huslik_elektronik.fcma2.bluetooth;
+package de.huslik_elektronik.fcma2.activity;
 
 
 import android.app.Activity;
@@ -80,7 +80,7 @@ public class DeviceListActivity extends Activity {
 
         // Setup the window
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.device_list);
+        setContentView(R.layout.dialog_device_list);
 
         // Set result CANCELED in case the user backs out
         setResult(Activity.RESULT_CANCELED);

@@ -17,18 +17,20 @@
 
 package de.huslik_elektronik.fcma2.model;
 
-import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class JsonStreamData {
 
+    private Date loggingStart;
     private ArrayList<CDataStreamSetting> dataStreamSettings;
     private ArrayList<CSensorFrame> dataStreamSensors;
     private ArrayList<CGpsFrame> dataStreamGps;
 
     public JsonStreamData(){}
 
-    public JsonStreamData(ArrayList<CDataStreamSetting> dataStreamSettings, ArrayList<CSensorFrame> dataStreamSensors, ArrayList<CGpsFrame> dataStreamGps) {
+    public JsonStreamData(Date loggingStart, ArrayList<CDataStreamSetting> dataStreamSettings, ArrayList<CSensorFrame> dataStreamSensors, ArrayList<CGpsFrame> dataStreamGps) {
+        this.loggingStart = loggingStart;
         this.dataStreamSettings = dataStreamSettings;
         this.dataStreamSensors = dataStreamSensors;
         this.dataStreamGps = dataStreamGps;
@@ -46,8 +48,13 @@ public class JsonStreamData {
         return dataStreamGps;
     }
 
+    public Date getLoggingStart() {
+        return loggingStart;
+    }
+
     public void JsonClearStreamData()
     {
+        loggingStart = null;
         dataStreamSettings.clear();
         dataStreamSensors.clear();
         dataStreamGps.clear();

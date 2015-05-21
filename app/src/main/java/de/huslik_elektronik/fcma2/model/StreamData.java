@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.huslik_elektronik.fcma2.service.Controller;
 
@@ -35,10 +36,8 @@ public class StreamData {
     private Controller controller;
 
     private ArrayList<CDataStreamSetting> dataStreamSettings;
-
     private ArrayList dataStreams;
-
-    private String jsonStr;
+    private Date loggingStart = null;
 
     private ArrayList<Handler> vHandlers;
     private Handler btStreamHandler =
@@ -46,6 +45,10 @@ public class StreamData {
                 @Override
                 public void handleMessage(Message msg) {
                     Message m = null;
+
+                    // Logging starts on first received frame
+                    if (loggingStart == null)
+                        loggingStart = new Date();
 
                     switch (msg.what) {
                         case SENSOR:
@@ -131,8 +134,13 @@ public class StreamData {
     }
 
     public void clear() {
+        loggingStart = null;
         for (int i = 0; i < dataStreams.size(); i++)
             ((ArrayList) dataStreams.get(i)).clear();
+    }
+
+    public Date getLoggingStart() {
+        return loggingStart;
     }
 
     public void sendAllSensorFrames() {
@@ -149,24 +157,29 @@ public class StreamData {
         }
     }
 
-    public void saveViaJson() {
-        JsonHandler jH = new JsonHandler(dataStreamSettings, (ArrayList<CSensorFrame>) dataStreams.get(SENSOR), (ArrayList<CGpsFrame>) dataStreams.get(GPS));
-        jsonStr = jH.exportToJson();
+    public String saveViaJson() {
+        JsonHandler jH = new JsonHandler(loggingStart, dataStreamSettings, (ArrayList<CSensorFrame>) dataStreams.get(SENSOR), (ArrayList<CGpsFrame>) dataStreams.get(GPS));
+        String jsonStr = jH.exportToJson();
 
-        // Test kml
-        KmlHandlerGpsStream kmlH = new KmlHandlerGpsStream();
-        String kmlStr = kmlH.getKML((ArrayList<CGpsFrame>) dataStreams.get(GPS));
+        return jsonStr;
     }
 
-    public void loadViaJson() {
-        JsonHandler jH = new JsonHandler(dataStreamSettings, (ArrayList<CSensorFrame>) dataStreams.get(SENSOR), (ArrayList<CGpsFrame>) dataStreams.get(GPS));
+    public void loadViaJson(String jsonStr) {
+        JsonHandler jH = new JsonHandler(loggingStart, dataStreamSettings, (ArrayList<CSensorFrame>) dataStreams.get(SENSOR), (ArrayList<CGpsFrame>) dataStreams.get(GPS));
         jH.importFromJson(jsonStr);
         dataStreamSettings = jH.getDataStreamSetting();
 
+        loggingStart = jH.getLoggingStart();
         dataStreams.set(SENSOR, jH.getDataStreamSensors());
         dataStreams.set(GPS, jH.getDataStreamGps());
 
+    }
 
+    public String saveViaKML() {
+        KmlHandlerGpsStream kmlH = new KmlHandlerGpsStream();
+        String kmlStr = kmlH.getKML((ArrayList<CGpsFrame>) dataStreams.get(GPS));
+
+        return kmlStr;
     }
 
 

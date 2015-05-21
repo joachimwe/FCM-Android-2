@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,8 +35,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+
 import de.huslik_elektronik.fcma2.R;
-import de.huslik_elektronik.fcma2.bluetooth.DeviceListActivity;
 import de.huslik_elektronik.fcma2.service.Controller;
 import de.huslik_elektronik.fcma2.service.IFcm;
 import de.huslik_elektronik.fcma2.view.GpsFragment;
@@ -59,6 +64,14 @@ public class MainActivity extends Activity {
     public static enum FragmentAnimation {NONE, LEFT_TO_RIGHT, RIGHT_TO_LEFT}
 
     ;
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int FILE_SELECTED_REQUEST = 2;
+    private static final int REQUEST_ENABLE_BT = 3;
+
+    public static final String FILENAME_DATA = "filenameData";
+
 
     private final ServiceConnection mServiceConnection =
             new ServiceConnection() {
@@ -206,16 +219,40 @@ public class MainActivity extends Activity {
             setFragment(Controller.ActiveFragment.SETTING);
         }
 
-        if (id == R.id.action_dataOperations) {
-            fcmService.getModelStreamData().saveViaJson();
-        }
-        if (id == R.id.action_dataimport) {
-            fcmService.getModelStreamData().loadViaJson();
+        if (id == R.id.action_dataExport) {
+            //fcmService.getModelStreamData().saveViaJson();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+            String dateStr = formatter.format(fcmService.getModelStreamData().getLoggingStart());
+            String filename = "FCM_" + dateStr + ".log";
+            String payLoad = fcmService.getModelStreamData().saveViaJson();
+
+            File f = null;
+            FileOutputStream outputStream;
+
+            try {
+                f = new File(getExternalFilesDir(null).getAbsolutePath(), filename);
+                outputStream = new FileOutputStream(f);
+                outputStream.write(payLoad.getBytes());
+                outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         if (id == R.id.action_dataclear) {
             fcmService.getModelStreamData().clear();
+            setFragment(Controller.ActiveFragment.ABOUT);
+            fcmService.setActiveFragmet(Controller.ActiveFragment.ABOUT);
         }
+
+        if (id == R.id.action_dataImport) {
+            //   fcmService.getModelStreamData().loadViaJson();
+            Intent intent = new Intent(this, FileSelector.class);
+            startActivityForResult(intent, FILE_SELECTED_REQUEST);
+        }
+
+
         if (id == R.id.action_bluetooth_searching) {
             //fcmService.getBridge().btSearching();
             // Launch the DeviceListActivity to see devices and do scan
@@ -234,9 +271,7 @@ public class MainActivity extends Activity {
         // update ActionBarMenu
         invalidateOptionsMenu();
 
-        return super.
-
-                onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -298,10 +333,6 @@ public class MainActivity extends Activity {
     }
 
 
-    // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_ENABLE_BT = 3;
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
@@ -322,6 +353,37 @@ public class MainActivity extends Activity {
                     Toast.makeText(this, R.string.bt_not_enabled_leaving,
                             Toast.LENGTH_SHORT).show();
                     finish();
+                }
+                break;
+
+            case FILE_SELECTED_REQUEST:
+                // Make sure the request was successful
+                if (resultCode == RESULT_OK) {
+                    String filename = data.getStringExtra(FILENAME_DATA);
+
+
+                    String payLoad = fcmService.getModelStreamData().saveViaJson();
+
+                    File f = null;
+                    FileInputStream inputStream;
+
+                    StringBuilder s = new StringBuilder();
+
+                    try {
+                        f = new File(getExternalFilesDir(null).getAbsolutePath(), filename);
+                        inputStream = new FileInputStream(f);
+                        int content;
+
+                        while ((content = inputStream.read()) != -1) {
+                            // convert to char and display it
+                            s.append((char) content);
+                        }
+                        inputStream.close();
+                    } catch (Exception e) {
+                        Log.e("xmlParser", e.toString());
+                    }
+
+                    fcmService.getModelStreamData().loadViaJson(s.toString());
                 }
                 break;
 

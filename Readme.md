@@ -28,3 +28,6 @@ https://code.google.com/p/osmdroid/wiki/Prerequisites
 imported via gradle:
     compile 'org.osmdroid:osmdroid-android:4.3'
     compile 'org.slf4j:slf4j-simple:1.6.1'
+
+json support
+    compile 'com.google.code.gson:gson:2.2.4'

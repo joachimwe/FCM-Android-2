@@ -20,13 +20,14 @@ package de.huslik_elektronik.fcma2.model;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class JsonHandler {
 
     JsonStreamData jsd;
 
-    public JsonHandler(ArrayList<CDataStreamSetting> dataStreamSettings, ArrayList<CSensorFrame> dataStreamSensors, ArrayList<CGpsFrame> dataStreamGps){
-        jsd = new JsonStreamData( dataStreamSettings,dataStreamSensors,dataStreamGps);
+    public JsonHandler(Date loggingStart, ArrayList<CDataStreamSetting> dataStreamSettings, ArrayList<CSensorFrame> dataStreamSensors, ArrayList<CGpsFrame> dataStreamGps) {
+        jsd = new JsonStreamData(loggingStart, dataStreamSettings, dataStreamSensors, dataStreamGps);
     }
 
     public String exportToJson() {
@@ -38,19 +39,23 @@ public class JsonHandler {
     public void importFromJson(String jsonStr) {
         jsd.JsonClearStreamData();
         Gson gson = new Gson();
-        jsd =  gson.fromJson(jsonStr, jsd.getClass());
+        jsd = gson.fromJson(jsonStr, jsd.getClass());
     }
 
-    public ArrayList<CDataStreamSetting> getDataStreamSetting(){
+    public ArrayList<CDataStreamSetting> getDataStreamSetting() {
         return jsd.getDataStreamSettings();
     }
 
-    public ArrayList<CSensorFrame> getDataStreamSensors(){
+    public ArrayList<CSensorFrame> getDataStreamSensors() {
         return jsd.getDataStreamSensors();
     }
 
-    public ArrayList<CGpsFrame> getDataStreamGps(){
-        return  jsd.getDataStreamGps();
+    public ArrayList<CGpsFrame> getDataStreamGps() {
+        return jsd.getDataStreamGps();
+    }
+
+    public Date getLoggingStart() {
+        return jsd.getLoggingStart();
     }
 
 }

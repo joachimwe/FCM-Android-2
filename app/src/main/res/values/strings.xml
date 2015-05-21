@@ -10,10 +10,13 @@
     <string name="action_about">About</string>
     <string name="action_stopStream">Stop Datastream</string>
     <string name="action_showStream">Show Streamdata</string>
-    <string name="action_dataOperations">Data Ops</string>
+    <string name="action_dataExport">Export</string>
 
     <!-- Bluetooth FcmBt -->
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled.</string>
+
+    <!-- File Selector -->
+    <string name="title_activity_file_selector">FlightLog auswählen</string>
 
 
     <!-- DeviceListActivity -->
