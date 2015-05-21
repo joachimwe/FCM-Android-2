@@ -48,7 +48,7 @@ public class FileSelector extends Activity {
         lv_files = (ListView) findViewById(R.id.fileSelector);
 
 
-        // Scan Fcm Directory for kml
+        // Scan RealFcm Directory for kml
         FileFilter filter = new FileFilter() {
             @Override
             public boolean accept(File file) {

@@ -77,7 +77,7 @@ public interface IFcm {
     public void startMenuStream();
 
     /**
-     * startMenuStream - send MenuCommands to Fcm
+     * startMenuStream - send MenuCommands to RealFcm
      *
      * @param mc - navigation commands
      */
