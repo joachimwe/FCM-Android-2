@@ -28,11 +28,11 @@ import de.huslik_elektronik.fcma2.model.Menu;
 import de.huslik_elektronik.fcma2.model.StreamData;
 
 public class DummyFcm implements IFcm {
-    private Handler mMenuHandler;
-    private Handler mDataHandler;
+    protected Handler mMenuHandler;
+    protected Handler mDataHandler;
 
-    private BtStatus btStatus;
-    private BtType btType;
+    protected BtStatus btStatus;
+    protected BtType btType;
 
     protected Context ctx;
 
@@ -50,7 +50,7 @@ public class DummyFcm implements IFcm {
     }
 
     @Override
-    public BtStatus connect() {
+    public BtStatus connect(String address) {
         btStatus = BtStatus.CONNECTED;
         return BtStatus.CONNECTED;
     }

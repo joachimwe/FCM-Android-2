@@ -61,7 +61,6 @@ public class Controller extends Service {
         public ActiveFragment getActiveFragment() {
             return activeFragment;
         }
-
     }
 
 
@@ -69,7 +68,8 @@ public class Controller extends Service {
         // Factory
         mMenu = new Menu(this);
         mStreamData = new StreamData(this);
-        bridge = new DummyFcm(mMenu.getBtMenuHandler(), mStreamData.getBtStreamHandler());
+        //  bridge = new DummyFcm(mMenu.getBtMenuHandler(), mStreamData.getBtStreamHandler());
+        bridge = new RealFcm(mMenu.getBtMenuHandler(), mStreamData.getBtStreamHandler());
     }
 
     public ActiveFragment getActiveFragment() {

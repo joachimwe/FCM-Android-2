@@ -19,11 +19,21 @@ package de.huslik_elektronik.fcma2.service;
 
 // RealFcm extends with real functionality
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
+import de.huslik_elektronik.fcma2.bluetooth.FcmByteBuffer;
+import de.huslik_elektronik.fcma2.bluetooth.FcmConnector;
+import de.huslik_elektronik.fcma2.bluetooth.FcmData;
+
 public class RealFcm extends DummyFcm implements IFcm {
+
+    // Log Tag
+    public static final String TAG = "RealFcm";
 
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -38,6 +48,11 @@ public class RealFcm extends DummyFcm implements IFcm {
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
+
+    // Bluetooth Adapter
+    private BluetoothAdapter mBluetoothAdapter;
+    private FcmConnector mFcmConnector;
+    private FcmByteBuffer mByteBuffer;
 
     public static int MENUREPEAT = 5; // after MENUREPEAT loops - menu was
 
@@ -68,11 +83,9 @@ public class RealFcm extends DummyFcm implements IFcm {
                     //String writeMessage = new String(writeBuf);
                     break;
                 case MESSAGE_READ:
-                    // byte[] readBuf = (byte[]) msg.obj;
-
                     byte[] readBuf = (byte[]) msg.obj;
-                    // TODO
-                    //buffer.add(readBuf, msg.arg1); // byte buffer solves 0x10 LF
+                    mByteBuffer.add(readBuf, msg.arg1);
+
                     break;
 
                 case MESSAGE_DEVICE_NAME:
@@ -90,7 +103,65 @@ public class RealFcm extends DummyFcm implements IFcm {
 
     public RealFcm(Handler m, Handler d) {
         super(m, d);
+        mByteBuffer = new FcmByteBuffer(m, d);
     }
 
+    @Override
+    public BtStatus connect(String address) {
+        // Get local Bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(ctx, "Bluetooth is not available",
+                    Toast.LENGTH_LONG).show();
+
+            // TODO enable bt request - via intend over service
+            return BtStatus.NOTCONNECTED;
+        }
+        // Get the BluetoothDevice object
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
+        btStatus = BtStatus.CONNECTED;
+
+        // StartupFcmService and Processing
+        // Initialize the FcmConnector to perform bluetooth connections
+        if (mFcmConnector == null)
+            mFcmConnector = new FcmConnector(ctx, mHandler);
+        // Buffer Processing start
+        if (mByteBuffer.running() == false)
+            mByteBuffer.startProcessing();
+
+        // Attempt to connect to the device
+        mFcmConnector.connect(device);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Log.d(TAG, "Wait to complete Connection \n" + e);
+        }
+
+        return BtStatus.CONNECTED;
+    }
+
+    public BtStatus disconnect() {
+        btStatus = BtStatus.NOTCONNECTED;
+        // sendMessage(fd.getCmdStr(COMMAND.STS));
+        mFcmConnector.stop();
+        mByteBuffer.stopProcessing(); // stop worker task
+        return BtStatus.NOTCONNECTED;
+    }
+
+    public void getFcmVersion() {
+        byte[] bFcmHello = FcmData.getCmd(FcmData.COMMAND.FCM);
+        mFcmConnector.write(bFcmHello);
+        mByteBuffer.setLastCmd(FcmData.COMMAND.FCM);
+    }
+
+    public void startMenuStream() {
+        String sMenuStream = FcmData.getCmdStr(FcmData.COMMAND.MNU0);
+        byte[] bMenuStream = sMenuStream.getBytes();
+        mFcmConnector.write(bMenuStream);
+        mByteBuffer.setLastCmd(FcmData.COMMAND.MNU0);
+    }
 
 }

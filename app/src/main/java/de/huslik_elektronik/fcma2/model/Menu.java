@@ -25,8 +25,8 @@ import de.huslik_elektronik.fcma2.view.MenuFragment;
 
 public class Menu {
 
-    public final static int VERSION = 1;
-    public final static int MENU = 2;
+    public final static int VERSION = 100;
+    public final static int MENU = 102;
 
     private String menuText;
     private CVersion version;

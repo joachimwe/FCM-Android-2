@@ -20,11 +20,15 @@
 
 package de.huslik_elektronik.fcma2.bluetooth;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.util.Arrays;
 import java.util.Vector;
 
+import de.huslik_elektronik.fcma2.model.CVersion;
+import de.huslik_elektronik.fcma2.model.Menu;
 import de.huslik_elektronik.fcma2.service.RealFcm;
 
 public class FcmByteBuffer extends Vector<Byte> {
@@ -35,13 +39,19 @@ public class FcmByteBuffer extends Vector<Byte> {
     private Processing mProcessingThread = null;
     private boolean timeToQuit = true;
 
+    // Message Handlers
+    private Handler mMenuHandler;
+    private Handler mDataHandler;
+
     // searchstring
     byte[] search = new byte[FcmData.maxCmdLen];
 
-    public FcmByteBuffer() {
+    public FcmByteBuffer(Handler mHandler, Handler dHandler) {
         super();
 
-        // TODO connect menu and StreamData Handler
+        // Handler registration
+        mMenuHandler = mHandler;
+        mDataHandler = dHandler;
 
         // initial searchstring
         int i;
@@ -194,11 +204,10 @@ public class FcmByteBuffer extends Vector<Byte> {
                     }
 
                     // Send the obtained bytes to the UI Activity
-                    if (sb.length() > 1)
-                        // TODO MENU streaming
-                        /*menuHandler.obtainMessage(FragmentMenu.MENU,
-                                sb.toString().length(), -1, sb.toString())
-								.sendToTarget();*/
+                    if (sb.length() > 1) {
+                        Message m = Message.obtain(null, Menu.MENU, 0, 0, sb.toString());
+                        mMenuHandler.sendMessage(m);
+                    }
                         try {
                             Thread.sleep(50);
                         } catch (InterruptedException e) {
@@ -219,21 +228,23 @@ public class FcmByteBuffer extends Vector<Byte> {
                             Log.e(TAG, "Processing " + e);
                         }
                     }
-                }
+                    }
 
                 // RealFcm Hello
 
                 if (lastCmd == FcmData.COMMAND.FCM) {
                     if ((result = ProcessBuffer(buffer, FcmData.COMMAND.FCM)) != null) {
-                        // TODO menu version data
-						/*main.setVersionH(((0xFF & (int) result[0]) * 256)
-								+ ((0xFF & (int) result[1])));
-						main.setVersionL(((0xFF & (int) result[2]) * 256)
-								+ ((0xFF & (int) result[3])));
-						int para = ((0xFF & (int) result[4]) * 256)
-								+ ((0xFF & (int) result[5]));
-						if (Fcm.M_PARA)
-							main.getfPara().setAmount(para);*/
+                        int VersionH = (((0xFF & (int) result[0]) * 256)
+                                + ((0xFF & (int) result[1])));
+                        int VersionL = (((0xFF & (int) result[2]) * 256)
+                                + ((0xFF & (int) result[3])));
+                        int para = ((0xFF & (int) result[4]) * 256)
+                                + ((0xFF & (int) result[5]));
+
+                        CVersion v = new CVersion(VersionH, VersionL, para);
+                        Message m = Message.obtain(null, Menu.VERSION, 0, 0, v);
+                        mMenuHandler.sendMessage(m);
+
                     }
                 }
 
@@ -242,8 +253,8 @@ public class FcmByteBuffer extends Vector<Byte> {
                 if (lastCmd == FcmData.COMMAND.STD) {
                     if ((result = ProcessBuffer(buffer, FcmData.COMMAND.D)) != null) {
                         // TODO Sensor Stream
-						/*SensorFrame sensorFrame = new SensorFrame();
-						if (result.length == 73) {
+                        /*SensorFrame sensorFrame = new SensorFrame();
+                        if (result.length == 73) {
 							sensorFrame.setFrame(result);
 							main.getfSens().addSensorFrame(sensorFrame);
 						}*/
@@ -257,15 +268,15 @@ public class FcmByteBuffer extends Vector<Byte> {
                     if (result != null) {
 
                         // TODO Gps stream
-						/*gpsHandler.obtainMessage(FragmentGps.GPS,
-								result.length, -1, result).sendToTarget();*/
+                        /*gpsHandler.obtainMessage(FragmentGps.GPS,
+                                result.length, -1, result).sendToTarget();*/
                     }
                 }
 
-            }
+                }
 
             Log.d(TAG, "Processing Buffer stopped");
-        }
+            }
 
         // moved to Processing thread
         private synchronized byte[] ProcessBuffer(FcmByteBuffer buf, FcmData.COMMAND cmd) {

@@ -187,17 +187,20 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_connect) {
-            fcmService.getBridge().connect();
+            // TODO load saved adress
+            String address = "fixAdresse";
+            connectDevice(address);
         }
 
         if (id == R.id.action_disconnect) {
-            fcmService.getBridge().disconnect();
+            disconnectDevice();
         }
 
         if (id == R.id.action_startMenu) {
             setFragment(Controller.ActiveFragment.MENU);
             fcmService.getModelMenu().setvMenuHandler(frag_menu.getvMenuHandler());
             fcmService.getBridge().getFcmVersion();
+            //fcmService.getBridge().startMenuStream();
         }
 
         // touch on Fragment without StreamData -> Change; touch on Frament with Streamdata -> stream FCM Data
@@ -220,7 +223,6 @@ public class MainActivity extends Activity {
         }
 
         if (id == R.id.action_dataExport) {
-            //fcmService.getModelStreamData().saveViaJson();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
             String dateStr = formatter.format(fcmService.getModelStreamData().getLoggingStart());
             String filename = "FCM_" + dateStr + ".log";
@@ -254,7 +256,6 @@ public class MainActivity extends Activity {
 
 
         if (id == R.id.action_bluetooth_searching) {
-            //fcmService.getBridge().btSearching();
             // Launch the DeviceListActivity to see devices and do scan
             Intent serverIntent = new Intent(this, DeviceListActivity.class);
             startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
@@ -338,7 +339,8 @@ public class MainActivity extends Activity {
             case REQUEST_CONNECT_DEVICE_SECURE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(data, true, false);
+                    String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device MAC address
+                    connectDevice(address);
                 }
                 break;
 
@@ -389,6 +391,19 @@ public class MainActivity extends Activity {
 
         }
     }
+
+    private void connectDevice(String address) {
+        fcmService.getBridge().connect(address);
+        // update ActionBarMenu
+        invalidateOptionsMenu();
+    }
+
+    private void disconnectDevice() {
+        fcmService.getBridge().disconnect();
+        // update ActionBarMenu
+        invalidateOptionsMenu();
+    }
+
 
 
     private void connectDevice(Intent data, boolean secure, boolean lastConnect) {

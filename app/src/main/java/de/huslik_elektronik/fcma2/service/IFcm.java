@@ -42,7 +42,7 @@ public interface IFcm {
     /**
      * Connect to source e.g. BT
      */
-    public BtStatus connect();
+    public BtStatus connect(String address);
 
     /**
      * Disconnect from source

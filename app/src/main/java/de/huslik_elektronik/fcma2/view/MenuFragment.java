@@ -18,16 +18,18 @@
 package de.huslik_elektronik.fcma2.view;
 
 import android.app.Fragment;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import de.huslik_elektronik.fcma2.R;
+import de.huslik_elektronik.fcma2.activity.MainActivity;
+import de.huslik_elektronik.fcma2.model.CVersion;
 
 public class MenuFragment extends Fragment {
 
@@ -42,7 +44,8 @@ public class MenuFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case NEW_VERSION:
-                    tvVersion.setText("test jetzt kommts an");
+                    CVersion version = (CVersion) msg.obj;
+                    tvVersion.setText("Version: " + version.getVersion_h() + "." + version.getVersion_l() + ", Parameters #" + version.getMenuItems());
                     break;
                 case NEW_MENUTEXT:
                     String menuText = (String) msg.obj;
@@ -52,9 +55,7 @@ public class MenuFragment extends Fragment {
         }
     };
 
-
     public MenuFragment() {
-
     }
 
     @Override
@@ -63,6 +64,14 @@ public class MenuFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_menu, container, false);
         tvVersion = (TextView) view.findViewById(R.id.fm_version);
         tvMenuText = (TextView) view.findViewById(R.id.fm_menutext);
+
+        Button Enter = (Button) view.findViewById(R.id.fm_btn_enter);
+        Enter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).getFcmService().getBridge().startMenuStream();
+            }
+        });
 
         return view;
     }

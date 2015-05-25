@@ -34,7 +34,7 @@ public class FcmData {
 
     ;
 
-    public String getCmdStr(COMMAND number) {
+    public static String getCmdStr(COMMAND number) {
         if (number == COMMAND.MNU0 | number == COMMAND.MNUM
                 | number == COMMAND.MNUm | number == COMMAND.MNUP
                 | number == COMMAND.MNUp || number == COMMAND.MNUE)
@@ -45,17 +45,27 @@ public class FcmData {
         return (sPrefix + number.name() + sPostfix);
     }
 
-    public COMMAND getLastCmd() {
+    public static COMMAND getLastCmd() {
         return (lastCMD);
     }
 
-    public byte[] getCmdStart(COMMAND number) {
+    public static byte[] getCmdStart(COMMAND number) {
         byte[] c = new byte[6];
         int i = 0;
         for (i = 0; i < 3; i++)
             c[i] = (byte) FcmData.sPrefix.charAt(i);
         for (i = 0; i < 3; i++)
             c[i + 3] = (byte) number.name().charAt(i);
+        return c;
+    }
+
+    public static byte[] getCmd(COMMAND number) {
+        byte[] c = new byte[9];
+        byte[] mem = getCmdStart(number);
+        for (int i = 0; i < 6; i++)
+            c[i] = mem[i];
+        for (int i = 0; i < 3; i++)
+            c[i + 6] = postfix[i];
         return c;
     }
 
