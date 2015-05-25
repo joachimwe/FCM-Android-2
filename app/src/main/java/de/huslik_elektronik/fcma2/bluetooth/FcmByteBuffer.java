@@ -259,7 +259,7 @@ public class FcmByteBuffer extends Vector<Byte> {
                     if ((result = ProcessBuffer(buffer, FcmData.COMMAND.D)) != null) {
                         // TODO Sensor Stream
                         /*SensorFrame sensorFrame = new SensorFrame();
-                        if (result.length == 73) {
+						if (result.length == 73) {
 							sensorFrame.setFrame(result);
 							main.getfSens().addSensorFrame(sensorFrame);
 						}*/
