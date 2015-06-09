@@ -262,6 +262,16 @@ public class MainActivity extends Activity {
             return true;
         }
 
+        if (id == R.id.action_gpsStreamStart) {
+            // send gps go
+            fcmService.getBridge().startDataStream();
+        }
+
+        if (id == R.id.action_gpsStreamStop) {
+            // send gps stop
+            fcmService.getBridge().stopDataStream();
+        }
+
         if (id == R.id.action_about)
 
         {

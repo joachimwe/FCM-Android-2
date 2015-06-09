@@ -164,4 +164,30 @@ public class RealFcm extends DummyFcm implements IFcm {
         mByteBuffer.setLastCmd(FcmData.COMMAND.MNU0);
     }
 
+    @Override
+    public void startDataStream() {
+        btType = BtType.DATA_STREAM;
+        startGpsStream();
+    }
+
+    @Override
+    public void stopDataStream() {
+        btType = BtType.NONE;
+        stopStreaming();
+    }
+
+    public void startGpsStream() {
+        byte[] bGpsStream = FcmData.getCmdDelay(FcmData.COMMAND.STG, 50);
+        String str = bGpsStream.toString();
+        mFcmConnector.write(bGpsStream);
+        mByteBuffer.setLastCmd(FcmData.COMMAND.STG);
+    }
+
+    public void stopStreaming() {
+        String sStopStream = FcmData.getCmdStr(FcmData.COMMAND.STS);
+        byte[] bStopStream = sStopStream.getBytes();
+        mFcmConnector.write(bStopStream);
+        mByteBuffer.setLastCmd(FcmData.COMMAND.STS);
+    }
+
 }

@@ -27,8 +27,10 @@ import android.util.Log;
 import java.util.Arrays;
 import java.util.Vector;
 
+import de.huslik_elektronik.fcma2.model.CGpsFrame;
 import de.huslik_elektronik.fcma2.model.CVersion;
 import de.huslik_elektronik.fcma2.model.Menu;
+import de.huslik_elektronik.fcma2.model.StreamData;
 import de.huslik_elektronik.fcma2.service.RealFcm;
 
 public class FcmByteBuffer extends Vector<Byte> {
@@ -42,6 +44,9 @@ public class FcmByteBuffer extends Vector<Byte> {
     // Message Handlers
     private Handler mMenuHandler;
     private Handler mDataHandler;
+
+    // frameID
+    private int frameId = 0;
 
     // searchstring
     byte[] search = new byte[FcmData.maxCmdLen];
@@ -208,11 +213,11 @@ public class FcmByteBuffer extends Vector<Byte> {
                         Message m = Message.obtain(null, Menu.MENU, 0, 0, sb.toString());
                         mMenuHandler.sendMessage(m);
                     }
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e) {
-                            Log.e(TAG, "Processing " + e);
-                        }
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "Processing " + e);
+                    }
                 }
 
                 // Parameter
@@ -228,7 +233,7 @@ public class FcmByteBuffer extends Vector<Byte> {
                             Log.e(TAG, "Processing " + e);
                         }
                     }
-                    }
+                }
 
                 // RealFcm Hello
 
@@ -267,16 +272,44 @@ public class FcmByteBuffer extends Vector<Byte> {
                     result = ProcessBuffer(buffer, FcmData.COMMAND.G);
                     if (result != null) {
 
-                        // TODO Gps stream
+                        int pos = 0;
+                        int longitude = FcmData.convFcmAndroidInt32(result, pos);
+                        pos += 4;
+                        int latitude = FcmData.convFcmAndroidInt32(result, pos);
+                        pos += 4;
+                        int height = FcmData.convFcmAndroidInt32(result, pos);
+                        // Speed
+                        pos += 4;
+                        float xSpeed = FcmData.convFcmAndroidFloat32(result, pos);
+                        pos += 4;
+                        float ySpeed = FcmData.convFcmAndroidFloat32(result, pos);
+                        pos += 4;
+                        float zSpeed = FcmData.convFcmAndroidFloat32(result, pos);
+                        // Distance to target
+                        pos += 4;
+                        float xDist = FcmData.convFcmAndroidFloat32(result, pos);
+                        pos += 4;
+                        float yDist = FcmData.convFcmAndroidFloat32(result, pos);
+                        pos += 4;
+                        float zDist = FcmData.convFcmAndroidFloat32(result, pos);
+                        int satNum = result[pos + 4];
+
+                        // TODO - FCM increment
+                        frameId++;
+                        CGpsFrame gpsFrame = new CGpsFrame(frameId, longitude, latitude, height, xSpeed, ySpeed, zSpeed, xDist, yDist, zDist, satNum);
+
+                        Message m = Message.obtain(null, StreamData.GPS, 0, 0, gpsFrame);
+                        mDataHandler.sendMessage(m);
+
                         /*gpsHandler.obtainMessage(FragmentGps.GPS,
                                 result.length, -1, result).sendToTarget();*/
                     }
                 }
 
-                }
+            }
 
             Log.d(TAG, "Processing Buffer stopped");
-            }
+        }
 
         // moved to Processing thread
         private synchronized byte[] ProcessBuffer(FcmByteBuffer buf, FcmData.COMMAND cmd) {

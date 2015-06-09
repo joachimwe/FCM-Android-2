@@ -94,8 +94,9 @@ public interface IFcm {
     public void startDataStream();
 
     /**
-     * stopMenuStream - stops fcm streaming...
+     * stopDataStream - stops fcm streaming...
      */
     public void stopDataStream();
+
 
 }

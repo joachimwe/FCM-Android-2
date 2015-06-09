@@ -69,6 +69,19 @@ public class FcmData {
         return c;
     }
 
+    public static byte[] getCmdDelay(COMMAND number, int delay) {
+        byte[] c = new byte[10];
+        byte[] mem = getCmdStart(number);
+        for (int i = 0; i < 6; i++)
+            c[i] = mem[i];
+        // delay
+        c[6] = (byte) delay;
+
+        for (int i = 0; i < 3; i++)
+            c[i + 7] = postfix[i];
+        return c;
+    }
+
     public static int convFcmAndroidInt16(byte[] b, int pos) {
         byte[] conv = new byte[2];
         // high, low byte order must be changed

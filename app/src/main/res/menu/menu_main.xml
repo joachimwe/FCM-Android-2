@@ -59,6 +59,16 @@
         android:title="@string/action_bluetooth_searching"
         android:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_gpsStreamStart"
+        android:orderInCategory="100"
+        android:title="gpsStreamStart"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_gpsStreamStop"
+        android:orderInCategory="100"
+        android:title="gpsStreamStop"
+        android:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_about"
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_about"
