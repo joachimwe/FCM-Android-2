@@ -127,7 +127,7 @@ public class DummyFcm implements IFcm {
         Message mg1 = Message.obtain(mDataHandler, StreamData.GPS, g1);
         mDataHandler.sendMessage(mg1);
 
-        CGpsFrame g2 = new CGpsFrame(2, 10.432f, 48.289f, 440f, 2f, 0f, 0f, 0f, 0f,
+        CGpsFrame g2 = new CGpsFrame(2, 10.432f, 48.289f, 440f, 2.5f, 0f, 0f, 4f, 0f,
                 0f, 6);
         Message mg2 = Message.obtain(mDataHandler, StreamData.GPS, g2);
         mDataHandler.sendMessage(mg2);
