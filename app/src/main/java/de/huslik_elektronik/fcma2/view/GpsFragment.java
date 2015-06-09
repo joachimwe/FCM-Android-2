@@ -28,11 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
-import org.osmdroid.ResourceProxy;
 import org.osmdroid.bonuspack.overlays.Marker;
-import org.osmdroid.tileprovider.tilesource.MapBoxTileSource;
-import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -70,6 +66,8 @@ public class GpsFragment extends Fragment {
                     int xPos = msg.arg1;
 
                     // Update ListView
+                    gpsFrameList.add(gpsFrame);
+                    wayPointsAdapter.notifyDataSetChanged();
                     lWaypoints.invalidateViews();
 
                     // Update Chart
