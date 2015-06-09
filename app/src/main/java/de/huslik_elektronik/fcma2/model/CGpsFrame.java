@@ -160,4 +160,10 @@ public class CGpsFrame extends CFrame {
         return norm;
     }
 
+    public double getDistToHomeValue() {
+        // x, y, z -> norm
+        double norm = Math.sqrt(getxDist() * getxDist() + getyDist() * getyDist() + getzDist() * getzDist());
+        return norm;
+    }
+
 }

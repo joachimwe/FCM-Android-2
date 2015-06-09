@@ -60,6 +60,8 @@ public class StreamData {
                             break;
                         case GPS:
                             CGpsFrame gf = (CGpsFrame) msg.obj;
+
+
                             ((ArrayList<CGpsFrame>) dataStreams.get(GPS)).add(gf);
                             if (vHandlers != null) {
                                 for (Handler h : vHandlers) {

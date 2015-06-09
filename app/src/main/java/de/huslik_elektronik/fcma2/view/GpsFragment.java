@@ -50,10 +50,16 @@ public class GpsFragment extends Fragment {
 
     private ListView lWaypoints;
     private GpsListArrayAdapter wayPointsAdapter;
+    private TextView tvGpsInfo;
 
     private ArrayList<CGpsFrame> gpsFrameList;
 
     private ArrayList<GeoPoint> gp = new ArrayList<>();
+
+    // GpsInfo
+    private double maxSpeed = 0.;
+    private double maxDistToHome = 0.;
+
 
     // The Handler that gets information back from the BluetoothChatService
     private final Handler gpsHandler = new Handler() {
@@ -74,6 +80,8 @@ public class GpsFragment extends Fragment {
                     // not while streaming data
 
                     // Update Info
+                    calcMaxValues(gpsFrame);
+                    updateGpsInfo(gpsFrame);
                     break;
                 default:
                     // do nothing
@@ -115,6 +123,8 @@ public class GpsFragment extends Fragment {
                 actualMarker.setIcon(getResources().getDrawable(R.drawable.ic_marker_poi));
                 vMap.getOverlays().add(actualMarker);
                 vMap.invalidate();
+                // update GpsInfo
+                updateGpsInfo((CGpsFrame) gpsFrameList.get(i));
             }
 
         });
@@ -133,7 +143,12 @@ public class GpsFragment extends Fragment {
         updatePolyline();
 
         // Flight Info
-        // TODO
+        tvGpsInfo = (TextView) view.findViewById(R.id.fg_info);
+        if (!gpsFrameList.isEmpty()) {
+            for (CGpsFrame gf : gpsFrameList)
+                calcMaxValues(gf);
+            updateGpsInfo((CGpsFrame) gpsFrameList.get(0));
+        }
 
 
         return view;
@@ -153,6 +168,34 @@ public class GpsFragment extends Fragment {
             vMap.getOverlays().add(pl);
             vMap.getController().setCenter(gp.get(0));
         }
+    }
+
+    /**
+     * calculate max on Speed, Distance to Home
+     *
+     * @param gpsFrame
+     */
+
+    private void calcMaxValues(CGpsFrame gpsFrame) {
+        double speed = gpsFrame.getSpeedValue(CGpsFrame.SPEED.kmh);
+        if (maxSpeed < speed)
+            maxSpeed = speed;
+        double distToHome = gpsFrame.getDistToHomeValue();
+        if (maxDistToHome < distToHome)
+            maxDistToHome = distToHome;
+    }
+
+    /**
+     * show gpsInfo - speed and distToHome due to gpsFrame
+     *
+     * @param gpsFrame
+     */
+
+    private void updateGpsInfo(CGpsFrame gpsFrame) {
+        double speed = gpsFrame.getSpeedValue(CGpsFrame.SPEED.kmh);
+        double distToHome = gpsFrame.getDistToHomeValue();
+        String gpsInfo = "Speed: " + (float) speed + " km/h, (max. " + (float) maxSpeed + "km/h)\n" + "Distance To Home: " + (float) distToHome + " m, (max. " + (float) maxDistToHome + " m)";
+        tvGpsInfo.setText(gpsInfo);
     }
 
 }
