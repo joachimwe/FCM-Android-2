@@ -26,6 +26,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -53,9 +54,16 @@ import de.huslik_elektronik.fcma2.view.SettingFragment;
 
 public class MainActivity extends Activity {
 
+    // Preferences FCM
+    public static String PREFS_NAME = "FCM_Android";
+    public static String LAST_BT = "lastKnownDevice";
+    private SharedPreferences setting;
+
+    // FcmService
     private boolean mSerivceBound;
     private Controller.FcmController fcmService;
 
+    // UI Fragments
     private MenuFragment frag_menu;
     private HelloFragment frag_about;
     private SensorFragment frag_sensor;
@@ -98,6 +106,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Preferences
+        setting = getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
 
         setContentView(R.layout.activity_main);
 
@@ -188,9 +199,7 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_connect) {
-            // TODO load saved adress
-            String address = "fixAdresse";
-            connectDevice(address);
+            connectDevice(null);
         }
 
         if (id == R.id.action_disconnect) {
@@ -368,6 +377,10 @@ public class MainActivity extends Activity {
     }
 
     private void connectDevice(String address) {
+        if (address == null) {
+            address = setting.getString(LAST_BT, "");
+        }
+
         IFcm.BtStatus btStatus = fcmService.getBridge().connect(address);
 
         if (btStatus == IFcm.BtStatus.NOT_ENABLED) {
@@ -376,6 +389,12 @@ public class MainActivity extends Activity {
                     BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         } else {
+            // Connected
+            // Save connected adress
+            SharedPreferences.Editor editor = setting.edit();
+            editor.putString(LAST_BT, address);
+            editor.commit();
+
             // update ActionBarMenu
             invalidateOptionsMenu();
         }

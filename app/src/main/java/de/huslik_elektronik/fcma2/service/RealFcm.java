@@ -152,7 +152,7 @@ public class RealFcm extends DummyFcm implements IFcm {
         // sendMessage(fd.getCmdStr(COMMAND.STS));
         mFcmConnector.stop();
         mByteBuffer.stopProcessing(); // stop worker task
-        return BtStatus.NOTCONNECTED;
+        return btStatus;
     }
 
     public void getFcmVersion() {
