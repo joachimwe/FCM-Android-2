@@ -149,9 +149,10 @@ public class RealFcm extends DummyFcm implements IFcm {
 
     public BtStatus disconnect() {
         btStatus = BtStatus.NOTCONNECTED;
-        // sendMessage(fd.getCmdStr(COMMAND.STS));
-        mFcmConnector.stop();
+        stopStreaming();
+        // TODO wait when shut down connection
         mByteBuffer.stopProcessing(); // stop worker task
+        mFcmConnector.stop();
         return btStatus;
     }
 

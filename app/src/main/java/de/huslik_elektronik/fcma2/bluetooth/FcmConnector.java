@@ -231,14 +231,16 @@ public class FcmConnector {
     public synchronized void stop() {
         if (D)
             Log.d(TAG, "stop");
-        if (mConnectThread != null) {
-            mConnectThread.cancel();
-            mConnectThread = null;
-        }
         if (mConnectedThread != null) {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
+
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+            mConnectThread = null;
+        }
+
         if (mAcceptThread != null) {
             mAcceptThread.cancel();
             mAcceptThread = null;

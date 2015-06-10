@@ -150,6 +150,7 @@ public class MainActivity extends Activity {
     }
 
     public void onDestroy() {
+        super.onDestroy();
         // Unbind from the service
         if (mSerivceBound) {
             unbindService(mServiceConnection);
