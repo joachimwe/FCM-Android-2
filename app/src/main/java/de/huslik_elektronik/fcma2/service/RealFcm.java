@@ -115,32 +115,36 @@ public class RealFcm extends DummyFcm implements IFcm {
         if (mBluetoothAdapter == null) {
             Toast.makeText(ctx, "Bluetooth is not available",
                     Toast.LENGTH_LONG).show();
+            return BtStatus.NOT_AVAILABLE;
+        } else if (!mBluetoothAdapter.isEnabled()) {
+            Toast.makeText(ctx, "Bluetooth is not enabled",
+                    Toast.LENGTH_LONG).show();
+            return BtStatus.NOT_ENABLED;
+        } else {
 
-            // TODO enable bt request - via intend over service
-            return BtStatus.NOTCONNECTED;
+            // Get the BluetoothDevice object
+            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
+            btStatus = BtStatus.CONNECTED;
+
+            // StartupFcmService and Processing
+            // Initialize the FcmConnector to perform bluetooth connections
+            if (mFcmConnector == null)
+                mFcmConnector = new FcmConnector(ctx, mHandler);
+            // Buffer Processing start
+            if (mByteBuffer.running() == false)
+                mByteBuffer.startProcessing();
+
+            // Attempt to connect to the device
+            mFcmConnector.connect(device);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Log.d(TAG, "Wait to complete Connection \n" + e);
+            }
+
+            return BtStatus.CONNECTED;
         }
-        // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-
-        btStatus = BtStatus.CONNECTED;
-
-        // StartupFcmService and Processing
-        // Initialize the FcmConnector to perform bluetooth connections
-        if (mFcmConnector == null)
-            mFcmConnector = new FcmConnector(ctx, mHandler);
-        // Buffer Processing start
-        if (mByteBuffer.running() == false)
-            mByteBuffer.startProcessing();
-
-        // Attempt to connect to the device
-        mFcmConnector.connect(device);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Wait to complete Connection \n" + e);
-        }
-
-        return BtStatus.CONNECTED;
     }
 
     public BtStatus disconnect() {

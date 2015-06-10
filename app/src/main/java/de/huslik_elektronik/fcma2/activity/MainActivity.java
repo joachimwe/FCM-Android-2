@@ -21,6 +21,7 @@ package de.huslik_elektronik.fcma2.activity;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -356,56 +357,28 @@ public class MainActivity extends Activity {
 
             case REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a chat session
-                    // setupFcmMenu();
-
-                } else {
+                if (!(resultCode == Activity.RESULT_OK)) {
                     // User did not enable Bluetooth or an error occurred
                     Toast.makeText(this, R.string.bt_not_enabled_leaving,
                             Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 break;
-
-            case FILE_SELECTED_REQUEST:
-                // Make sure the request was successful
-                if (resultCode == RESULT_OK) {
-                    String filename = data.getStringExtra(FILENAME_DATA);
-
-
-                    String payLoad = fcmService.getModelStreamData().saveViaJson();
-
-                    File f = null;
-                    FileInputStream inputStream;
-
-                    StringBuilder s = new StringBuilder();
-
-                    try {
-                        f = new File(getExternalFilesDir(null).getAbsolutePath(), filename);
-                        inputStream = new FileInputStream(f);
-                        int content;
-
-                        while ((content = inputStream.read()) != -1) {
-                            // convert to char and display it
-                            s.append((char) content);
-                        }
-                        inputStream.close();
-                    } catch (Exception e) {
-                        Log.e("xmlParser", e.toString());
-                    }
-
-                    fcmService.getModelStreamData().loadViaJson(s.toString());
-                }
-                break;
-
         }
     }
 
     private void connectDevice(String address) {
-        fcmService.getBridge().connect(address);
-        // update ActionBarMenu
-        invalidateOptionsMenu();
+        IFcm.BtStatus btStatus = fcmService.getBridge().connect(address);
+
+        if (btStatus == IFcm.BtStatus.NOT_ENABLED) {
+            // Enable BT via Intent
+            Intent enableIntent = new Intent(
+                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        } else {
+            // update ActionBarMenu
+            invalidateOptionsMenu();
+        }
     }
 
     private void disconnectDevice() {
@@ -413,7 +386,6 @@ public class MainActivity extends Activity {
         // update ActionBarMenu
         invalidateOptionsMenu();
     }
-
 
 
     private void connectDevice(Intent data, boolean secure, boolean lastConnect) {

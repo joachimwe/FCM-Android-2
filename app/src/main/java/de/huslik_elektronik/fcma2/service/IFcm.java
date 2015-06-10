@@ -26,7 +26,7 @@ public interface IFcm {
 
     ;
 
-    public static enum BtStatus {CONNECTED, NOTCONNECTED}
+    public static enum BtStatus {NOT_AVAILABLE, NOT_ENABLED, CONNECTED, NOTCONNECTED}
 
     ;
 
