@@ -54,7 +54,7 @@ public class RealFcm extends DummyFcm implements IFcm {
     private FcmConnector mFcmConnector;
     private FcmByteBuffer mByteBuffer;
 
-    public static int MENUREPEAT = 5; // after MENUREPEAT loops - menu was
+    public final static int MENUREPEAT = 5; // after MENUREPEAT loops - menu was
 
     // The Handler that gets information back from the BluetoothChatService
     private final Handler mHandler = new Handler() {
@@ -96,6 +96,8 @@ public class RealFcm extends DummyFcm implements IFcm {
                 case MESSAGE_TOAST:
                     Toast.makeText(ctx, msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
                     break;
+                default:
+                    // do nothing
             }
         }
     };
@@ -183,7 +185,6 @@ public class RealFcm extends DummyFcm implements IFcm {
 
     public void startGpsStream() {
         byte[] bGpsStream = FcmData.getCmdDelay(FcmData.COMMAND.STG, 50);
-        String str = bGpsStream.toString();
         mFcmConnector.write(bGpsStream);
         mByteBuffer.setLastCmd(FcmData.COMMAND.STG);
     }

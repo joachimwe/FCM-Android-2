@@ -23,8 +23,6 @@ import android.os.Message;
 import java.util.ArrayList;
 import java.util.Date;
 
-import de.huslik_elektronik.fcma2.service.Controller;
-
 public class StreamData {
 
     public final static int SENSOR = 0;
@@ -32,8 +30,6 @@ public class StreamData {
     public final static int PACKET_TYPES = 2;       // must be the highest value
 
     private int[] lastPacketSend;
-
-    private Controller controller;
 
     private ArrayList<CDataStreamSetting> dataStreamSettings;
     private ArrayList dataStreams;
@@ -73,7 +69,8 @@ public class StreamData {
                                 lastPacketSend[GPS] = ((ArrayList<CGpsFrame>) dataStreams.get(GPS)).size();
                             }
                             break;
-
+                        default:
+                            // do nothing
 
                     }
                     // TODO - Packet loss; if packet ID differs more than 1
@@ -81,8 +78,8 @@ public class StreamData {
                 }
             };
 
-    public StreamData(Controller c) {
-        controller = c;
+    public StreamData() {
+
         // DataPackets
         //dataPackets = new ArrayList<CDataPacket>();
         dataStreams = new ArrayList<>();

@@ -37,13 +37,13 @@ public class FcmByteBuffer extends Vector<Byte> {
 
     static final long serialVersionUID = 0;
 
-    public static String TAG = "Processing";
-    private Processing mProcessingThread = null;
+    public final static String TAG = "Processing";
+    private transient Processing mProcessingThread = null;
     private boolean timeToQuit = true;
 
     // Message Handlers
-    private Handler mMenuHandler;
-    private Handler mDataHandler;
+    private transient Handler mMenuHandler;
+    private transient Handler mDataHandler;
 
     // frameID
     private int frameId = 0;
@@ -259,7 +259,7 @@ public class FcmByteBuffer extends Vector<Byte> {
                     if ((result = ProcessBuffer(buffer, FcmData.COMMAND.D)) != null) {
                         // TODO Sensor Stream
                         /*SensorFrame sensorFrame = new SensorFrame();
-						if (result.length == 73) {
+                        if (result.length == 73) {
 							sensorFrame.setFrame(result);
 							main.getfSens().addSensorFrame(sensorFrame);
 						}*/

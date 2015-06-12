@@ -353,6 +353,8 @@ public class FcmConnector {
                                     Log.e(TAG, "Could not close unwanted socket", e);
                                 }
                                 break;
+                            default:
+                                // do nothing
                         }
                     }
                 }

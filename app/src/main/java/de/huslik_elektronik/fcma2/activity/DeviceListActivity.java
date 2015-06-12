@@ -67,7 +67,7 @@ public class DeviceListActivity extends Activity {
     private static final boolean D = true;
 
     // Return Intent extra
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
+    public final static String EXTRA_DEVICE_ADDRESS = "device_address";
 
     // Member fields
     private BluetoothAdapter mBtAdapter;
@@ -177,7 +177,9 @@ public class DeviceListActivity extends Activity {
             mBtAdapter.cancelDiscovery();
 
             // Get the device MAC address, which is the last 17 chars in the View
-            String info = ((TextView) v).getText().toString();
+            String info = "";
+            if (v instanceof  TextView)
+                info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 
             // Create the result Intent and include the MAC address

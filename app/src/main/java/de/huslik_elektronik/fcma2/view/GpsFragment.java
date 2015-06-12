@@ -74,6 +74,9 @@ public class GpsFragment extends Fragment {
                     // not while streaming data
 
                     // Update Info
+                    break;
+                default:
+                    // do nothing
             }
         }
 

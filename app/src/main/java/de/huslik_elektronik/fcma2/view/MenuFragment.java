@@ -51,6 +51,8 @@ public class MenuFragment extends Fragment {
                     String menuText = (String) msg.obj;
                     tvMenuText.setText(menuText);
                     break;
+                default:
+                    // do nothing
             }
         }
     };

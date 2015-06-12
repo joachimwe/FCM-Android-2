@@ -47,7 +47,7 @@ import de.huslik_elektronik.fcma2.model.StreamData;
 public class SensorFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // Chart
-    private XYSeries mSeries = null;
+    // private XYSeries mSeries = null;
     private XYMultipleSeriesDataset mDataset = null;
     private XYMultipleSeriesRenderer mRenderer = null;
 
@@ -76,6 +76,9 @@ public class SensorFragment extends Fragment implements AdapterView.OnItemSelect
                     }
                     // draw chart new
                     chart.invalidate();
+                    break;
+                default:
+                    // do nothing
             }
         }
 

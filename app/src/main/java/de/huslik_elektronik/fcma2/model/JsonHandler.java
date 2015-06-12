@@ -37,7 +37,7 @@ public class JsonHandler {
     }
 
     public void importFromJson(String jsonStr) {
-        jsd.JsonClearStreamData();
+        jsd.jsonClearStreamData();
         Gson gson = new Gson();
         jsd = gson.fromJson(jsonStr, jsd.getClass());
     }

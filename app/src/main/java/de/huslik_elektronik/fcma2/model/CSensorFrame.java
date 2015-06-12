@@ -36,8 +36,8 @@ public class CSensorFrame extends CFrame {
     }
 
 
-    final public static int[] dim = {3, 3, 3, 3, 4, 1, 2};
-    final public static String[] labelCount = {"x", "y", "z", "h"};
+    final static int[] dim = {3, 3, 3, 3, 4, 1, 2};
+    final static String[] labelCount = {"x", "y", "z", "h"};
     final public static int[] colorList = {Color.RED, Color.BLUE, Color.GREEN,
             Color.YELLOW};
 

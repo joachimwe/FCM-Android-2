@@ -63,8 +63,10 @@ public class FileSelector extends Activity {
             // Scan dir
             paths = new ArrayList<String>();
             File[] files = f.listFiles(filter);
-            for (int i = 0; i < files.length; ++i) {
-                paths.add(files[i].getName());//  getAbsolutePath());
+            if (files != null) {
+                for (int i = 0; i < files.length; ++i) {
+                    paths.add(files[i].getName());//  getAbsolutePath());
+                }
             }
 
             filesAdapter =

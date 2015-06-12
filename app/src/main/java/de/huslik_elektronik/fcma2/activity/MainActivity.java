@@ -55,8 +55,8 @@ import de.huslik_elektronik.fcma2.view.SettingFragment;
 public class MainActivity extends Activity {
 
     // Preferences FCM
-    public static String PREFS_NAME = "FCM_Android";
-    public static String LAST_BT = "lastKnownDevice";
+    public final static String PREFS_NAME = "FCM_Android";
+    public final static String LAST_BT = "lastKnownDevice";
     private SharedPreferences setting;
 
     // FcmService
@@ -175,7 +175,7 @@ public class MainActivity extends Activity {
         }
 
         // if datastreaming -> no menu
-        if ((fcmService.getActiveFragment() == Controller.ActiveFragment.SENSOR || fcmService.getActiveFragment() == Controller.ActiveFragment.GPS)
+        if ((fcmService != null) && (fcmService.getActiveFragment() == Controller.ActiveFragment.SENSOR || fcmService.getActiveFragment() == Controller.ActiveFragment.GPS)
                 && fcmService.getBridge().getBtType() == IFcm.BtType.DATA_STREAM) {
             menu.findItem(R.id.action_DataStream).setVisible(false);
             menu.findItem(R.id.action_stopStream).setVisible(true);
@@ -228,7 +228,6 @@ public class MainActivity extends Activity {
             fcmService.getBridge().stopDataStream();
         }
 
-
         if (id == R.id.action_settings) {
             setFragment(Controller.ActiveFragment.SETTING);
         }
@@ -244,9 +243,11 @@ public class MainActivity extends Activity {
 
             try {
                 f = new File(getExternalFilesDir(null).getAbsolutePath(), filename);
+
                 outputStream = new FileOutputStream(f);
-                outputStream.write(payLoad.getBytes());
+                outputStream.write(payLoad.getBytes(getString(R.string.JSON)));
                 outputStream.close();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -374,6 +375,48 @@ public class MainActivity extends Activity {
                     finish();
                 }
                 break;
+            case FILE_SELECTED_REQUEST:
+                // Make sure the request was successful
+                if (resultCode == RESULT_OK) {
+                    String filename = data.getStringExtra(FILENAME_DATA);
+
+//                    String payLoad = fcmService.getModelStreamData().saveViaJson();
+
+                    File f = null;
+                    FileInputStream inputStream;
+
+                    StringBuilder s = new StringBuilder();
+
+                    try {
+
+                        f = new File(getExternalFilesDir(null).getAbsolutePath(), filename);
+
+                        inputStream = new FileInputStream(f);
+                        /*int content;
+
+                        while ((content = inputStream.read()) != -1) {
+                            // convert to char and display it
+                            s.append((char) content);
+                        }*/
+                        // TODO to be tested
+                        byte[] isBuffer = new byte[1024];
+                        int bytesRead = 0;
+                        while ((bytesRead = inputStream.read(isBuffer)) != -1) {
+                            String strBuffer = new String(isBuffer, 0, bytesRead, getString(R.string.JSON));
+                            s.append(strBuffer);
+                        }
+
+                        inputStream.close();
+
+                    } catch (Exception e) {
+                        Log.e("xmlParser", e.toString());
+                    }
+
+                    fcmService.getModelStreamData().loadViaJson(s.toString());
+                }
+                break;
+            default:
+                // do nothing
         }
     }
 
@@ -405,43 +448,6 @@ public class MainActivity extends Activity {
         fcmService.getBridge().disconnect();
         // update ActionBarMenu
         invalidateOptionsMenu();
-    }
-
-
-    private void connectDevice(Intent data, boolean secure, boolean lastConnect) {
-        String address = "test";
-
-        if (!lastConnect)
-            address = data.getExtras().getString(
-                    DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device MAC address
-        else
-            ; //   address = setting.getString(LAST_BT, "");
-
-
-       /* // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-
-        // Save last BT device
-        if (device != null) {
-            SharedPreferences.Editor editor = setting.edit();
-            editor.putString(LAST_BT, address);
-            editor.commit();
-        }
-
-        // StartupFcmService and Processing
-
-        startupFcmService();
-
-        // Attempt to connect to the device
-        mFcmService.connect(device);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Wait to complete Connection \n" + e);
-        }
-
-        // FCM Hello
-        sendMessage(fd.getCmdStr(COMMAND.FCM));*/
     }
 
 

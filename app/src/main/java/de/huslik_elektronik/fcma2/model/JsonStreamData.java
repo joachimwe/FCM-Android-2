@@ -52,7 +52,7 @@ public class JsonStreamData {
         return loggingStart;
     }
 
-    public void JsonClearStreamData()
+    public void jsonClearStreamData()
     {
         loggingStart = null;
         dataStreamSettings.clear();

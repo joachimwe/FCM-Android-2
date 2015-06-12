@@ -51,6 +51,8 @@ public class Menu {
                             menuText = (String) msg.obj;
                             m = Message.obtain(null, MenuFragment.NEW_MENUTEXT, 0, 0, menuText);
                             break;
+                        default:
+                            // do nothing
                     }
                     // signal new data, if active
                     if (controller.getActiveFragment() == Controller.ActiveFragment.MENU)

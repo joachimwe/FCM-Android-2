@@ -37,7 +37,7 @@ import de.huslik_elektronik.fcma2.model.CDataStreamSetting;
 
 
 public class SettingArrayAdapter extends ArrayAdapter<CDataStreamSetting> {
-    public final String TAG = "SETTING_ARRAY_ADAPTER";
+    public static final String TAG = "SETTING_ARRAY_ADAPTER";
     private final Context context;
     private ArrayList<CDataStreamSetting> values;
 

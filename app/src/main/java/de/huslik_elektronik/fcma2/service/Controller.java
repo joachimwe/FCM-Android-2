@@ -67,7 +67,7 @@ public class Controller extends Service {
     public Controller() {
         // Factory
         mMenu = new Menu(this);
-        mStreamData = new StreamData(this);
+        mStreamData = new StreamData();
         //  bridge = new DummyFcm(mMenu.getBtMenuHandler(), mStreamData.getBtStreamHandler());
         bridge = new RealFcm(mMenu.getBtMenuHandler(), mStreamData.getBtStreamHandler());
     }

@@ -19,10 +19,10 @@ package de.huslik_elektronik.fcma2.bluetooth;
 
 public class FcmData {
 
-    public final static String sPrefix = "---";
-    public final static String sPostfix = "~~~";
-    public final static byte[] prefix = {'-', '-', '-'};
-    public final static byte[] postfix = {'~', '~', '~'};
+    final static String sPrefix = "---";
+    final static String sPostfix = "~~~";
+    final static byte[] prefix = {'-', '-', '-'};
+    final static byte[] postfix = {'~', '~', '~'};
 
     public final static int maxCmdLen = prefix.length + 5;
 
