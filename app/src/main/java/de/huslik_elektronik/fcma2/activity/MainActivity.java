@@ -232,7 +232,7 @@ public class MainActivity extends Activity {
             try {
                 f = new File(getExternalFilesDir(null).getAbsolutePath(), filename);
                 outputStream = new FileOutputStream(f);
-                outputStream.write(payLoad.getBytes());
+                outputStream.write(payLoad.getBytes(getString(R.string.JSON)));
                 outputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -372,11 +372,11 @@ public class MainActivity extends Activity {
                     try {
                         f = new File(getExternalFilesDir(null).getAbsolutePath(), filename);
                         inputStream = new FileInputStream(f);
-                        int content;
-
-                        while ((content = inputStream.read()) != -1) {
-                            // convert to char and display it
-                            s.append((char) content);
+                        byte[] isBuffer = new byte[1024];
+                        int bytesRead = 0;
+                        while ((bytesRead = inputStream.read(isBuffer)) != -1) {
+                            String strBuffer = new String(isBuffer, 0, bytesRead, getString(R.string.JSON));
+                            s.append(strBuffer);
                         }
                         inputStream.close();
                     } catch (Exception e) {
