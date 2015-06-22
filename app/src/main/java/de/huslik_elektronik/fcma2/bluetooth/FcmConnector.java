@@ -484,8 +484,8 @@ public class FcmConnector {
 
                     bytes = mmInStream.read(buffer);
 
-                    if (bytes > 0)
-                        Log.d(TAG, "wir haben " + bytes);
+//                    if (bytes > 0)
+//                        Log.d(TAG, "wir haben " + bytes);
 
                     // Send the obtained bytes to the UI Activity/ Fcm Handler (here: realFcm)
                     mHandler.obtainMessage(RealFcm.MESSAGE_READ, bytes, -1, buffer)

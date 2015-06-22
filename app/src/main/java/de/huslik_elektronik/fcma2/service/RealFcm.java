@@ -174,7 +174,8 @@ public class RealFcm extends DummyFcm implements IFcm {
     @Override
     public void startDataStream() {
         btType = BtType.DATA_STREAM;
-        startGpsStream();
+       // startGpsStream();
+        startSensorStream();
     }
 
     @Override
@@ -187,6 +188,12 @@ public class RealFcm extends DummyFcm implements IFcm {
         byte[] bGpsStream = FcmData.getCmdDelay(FcmData.COMMAND.STG, 50);
         mFcmConnector.write(bGpsStream);
         mByteBuffer.setLastCmd(FcmData.COMMAND.STG);
+    }
+
+    public void startSensorStream() {
+        byte[] bGpsStream = FcmData.getCmdDelay(FcmData.COMMAND.STD, 50);
+        mFcmConnector.write(bGpsStream);
+        mByteBuffer.setLastCmd(FcmData.COMMAND.STD);
     }
 
     public void stopStreaming() {

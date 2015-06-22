@@ -75,7 +75,9 @@ public class SensorFragment extends Fragment implements AdapterView.OnItemSelect
                         mDataset.getSeriesAt(j).add(xPos, d[j]);
                     }
                     // draw chart new
-                    chart.invalidate();
+                    if (xPos%10 == 0)
+                        chart.invalidate();
+
                     break;
                 default:
                     // do nothing

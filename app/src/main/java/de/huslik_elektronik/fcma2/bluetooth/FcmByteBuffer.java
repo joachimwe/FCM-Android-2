@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import de.huslik_elektronik.fcma2.model.CGpsFrame;
+import de.huslik_elektronik.fcma2.model.CSensorFrame;
 import de.huslik_elektronik.fcma2.model.CVersion;
 import de.huslik_elektronik.fcma2.model.Menu;
 import de.huslik_elektronik.fcma2.model.StreamData;
@@ -263,6 +264,66 @@ public class FcmByteBuffer extends Vector<Byte> {
 							sensorFrame.setFrame(result);
 							main.getfSens().addSensorFrame(sensorFrame);
 						}*/
+                        if (result.length == 73) {
+
+                            // TODO - FCM increment
+                            frameId++;
+                            CSensorFrame sensorFrame = new CSensorFrame(frameId);
+                                                     
+                            int pos = 0;
+                            int i = 0;
+
+                            int b[] = new int[CSensorFrame.getDimension(CSensorFrame.SENSOR.Gyro)];
+                            // Gyro
+                            for (i = 0; i < CSensorFrame.getDimension(CSensorFrame.SENSOR.Gyro); i++) {
+                                b[i] = FcmData.convFcmAndroidInt32(result, pos);
+                                pos += 4;
+                            }
+                            sensorFrame.setG(b);
+
+                            // Acc
+                            int a[] = new int[CSensorFrame.getDimension(CSensorFrame.SENSOR.Acceleration)];
+                            for (i = 0; i < CSensorFrame.getDimension(CSensorFrame.SENSOR.Acceleration); i++) {
+                                a[i] = FcmData.convFcmAndroidInt32(result, pos);
+                                pos += 4;
+                            }
+                            sensorFrame.setA(a);
+                            // Magnetic
+                            int m[] = new int[CSensorFrame.getDimension(CSensorFrame.SENSOR.Magneto)];
+                            for ( i = 0; i < CSensorFrame.getDimension(CSensorFrame.SENSOR.Magneto); i++) {
+                                m[i] = FcmData.convFcmAndroidInt32(result, pos);
+                                pos += 4;
+                            }
+                            sensorFrame.setM(m);
+                            // Gov
+                            int gov [] = new int[CSensorFrame.getDimension(CSensorFrame.SENSOR.Governor)];
+                            for ( i = 0; i < CSensorFrame.getDimension(CSensorFrame.SENSOR.Governor); i++) {
+                                gov[i] = FcmData.convFcmAndroidInt32(result, pos);
+                                pos += 4;
+                            }
+                            sensorFrame.setGov(gov);
+                            // RC
+                            int rc[] = new int[CSensorFrame.getDimension(CSensorFrame.SENSOR.Gyro)];
+                            for ( i = 0; i < CSensorFrame.getDimension(CSensorFrame.SENSOR.Gyro); i++) {
+                                rc[i] = FcmData.convFcmAndroidInt32(result, pos);
+                                pos += 4;
+                            }
+                            sensorFrame.setRc(rc);
+                            // h
+                            int h = FcmData.convFcmAndroidInt32(result, pos);
+                            pos += 4;
+                            sensorFrame.setH(h);
+                            // temp
+                            int temp[] = new int[CSensorFrame.getDimension(CSensorFrame.SENSOR.Temperature)];
+                            for ( i = 0; i < CSensorFrame.getDimension(CSensorFrame.SENSOR.Temperature); i++) {
+                                temp[i] = FcmData.convFcmAndroidInt16(result, pos);
+                                pos += 2;
+                            }
+                            sensorFrame.setTemp(temp);
+
+                            Message mSensor = Message.obtain(null, StreamData.SENSOR, 0, 0, sensorFrame);
+                            mDataHandler.sendMessage(mSensor);
+                        }
 
                     }
                 }
@@ -298,11 +359,9 @@ public class FcmByteBuffer extends Vector<Byte> {
                         frameId++;
                         CGpsFrame gpsFrame = new CGpsFrame(frameId, longitude, latitude, height, xSpeed, ySpeed, zSpeed, xDist, yDist, zDist, satNum);
 
-                        Message m = Message.obtain(null, StreamData.GPS, 0, 0, gpsFrame);
-                        mDataHandler.sendMessage(m);
+                        Message mGps = Message.obtain(null, StreamData.GPS, 0, 0, gpsFrame);
+                        mDataHandler.sendMessage(mGps);
 
-                        /*gpsHandler.obtainMessage(FragmentGps.GPS,
-                                result.length, -1, result).sendToTarget();*/
                     }
                 }
 
