@@ -9,7 +9,8 @@ API 22
 Based on the experience of FCM Android (1).
 * Improved Softwaredesign with Frontend <-> Backgroud-Service pattern
 * Communication programmed to an interface, to support different sources (e.g. DummyFCM, realFCM, ...)
-* designated for stacked data frames like sensors and gps "simultanious"
+* designated for stacked data frames like sensors and gps "simultanious" (not implemented in FCM Module)
+* JSON support for logging
 
 <h2>Third Party Libs</h2>
 To build, link the following Libs
